@@ -5,6 +5,7 @@
 #include "tabs/profiles.h"
 #include "tabs/processes.h"
 #include "tabs/status.h"
+#include "tabs/helloworld.h"
 
 #include <gtkmm/applicationwindow.h>
 #include <gtkmm/builder.h>
@@ -36,6 +37,7 @@ class MainWindow : public Gtk::ApplicationWindow
     std::unique_ptr<Profiles> prof;
     std::unique_ptr<Processes> proc;
     std::unique_ptr<Logs> logs;
+    std::unique_ptr<Helloworld> helloworld;
 
   private:
     template <typename T_Widget>
