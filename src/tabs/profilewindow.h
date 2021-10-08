@@ -1,4 +1,4 @@
-#include <gtkmm/scrolledwindow.h>
+
 #include <gtkmm/window.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/box.h>
@@ -6,10 +6,11 @@
 #include <gtkmm/comboboxtext.h>
 #include <gtkmm/button.h>
 #include <gtkmm/builder.h>
-class Profilewindow : public Gtk::ScrolledWindow
+class Profilewindow
 {
 public:
   Profilewindow();
+  void on_button_clicked();
 
 protected:
   Glib::RefPtr<Gtk::Builder> builder;

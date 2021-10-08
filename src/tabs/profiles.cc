@@ -67,5 +67,6 @@ void Profiles::on_search_changed(){
 }
 void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column) //method to handle signal_row_clicked
 {
-  
+  std::cout << "test";
+  Profilewindow();
 }
