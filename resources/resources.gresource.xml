@@ -5,5 +5,6 @@
     <file>resources/icon.svg</file>
     <file preprocess="xml-stripblanks">resources/status.glade</file>
     <file preprocess="xml-stripblanks">resources/hello.glade</file>
+    <file preprocess="xml-stripblanks">resources/profilewindow.glade</file>
   </gresource>
 </gresources>

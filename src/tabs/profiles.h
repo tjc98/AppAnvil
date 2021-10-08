@@ -28,6 +28,7 @@ class Profiles : public Status
   protected:
     // Signal handlers    
     void on_search_changed();
+    void on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
 
     class StatusColumnRecord : public Gtk::TreeModel::ColumnRecord
     {
