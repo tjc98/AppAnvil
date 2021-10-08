@@ -58,10 +58,14 @@ Profiles::Profiles()
   s_use_regex->signal_clicked().connect(sig_handler, true);
   s_match_case->signal_clicked().connect(sig_handler, true);
   s_whole_word->signal_clicked().connect(sig_handler, true);
-
+  s_view->signal_row_activated().connect(sigc::mem_fun(*this, &Profiles::on_row_click)); //signal when row in TreeView is clicked
   this->show_all();
 }
 
 void Profiles::on_search_changed(){
   refresh();
+}
+void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column) //method to handle signal_row_clicked
+{
+  
 }
