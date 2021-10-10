@@ -2,6 +2,7 @@
 #define GTKMM_EXAMPLE_PROFILES_H
 
 #include "status.h"
+#include "profilewindow.h"
 
 #include <gtkmm/box.h>
 #include <gtkmm/builder.h>
@@ -45,6 +46,8 @@ class Profiles : public Status
 
     StatusColumnRecord col_record;
     Glib::RefPtr<Gtk::ListStore> list_store;
+  private:
+    Profilewindow pwindow;
 };
 
 #endif // GTKMM_EXAMPLE_PROFILES_H
