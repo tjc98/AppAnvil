@@ -67,6 +67,14 @@ void Profiles::on_search_changed(){
 }
 void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column) //method to handle signal_row_clicked
 {
-  std::cout << "test";
+  const auto iter = list_store->get_iter(path);
+  //std::cout << Gtk::TreeModel::get_iter(path) << std::endl;
+  if(iter)
+  {
+	  const auto row = *iter;
+	  auto column = (std::basic_string<char>) row[col_record.profile_col];
+	  auto record = (std::basic_string<char>) row[col_record.status_col];
+	  std::cout << "Row activated: ID=" << column.c_str() << ", Name=" << record.c_str() << std::endl;
+  }
   Profilewindow();
 }
