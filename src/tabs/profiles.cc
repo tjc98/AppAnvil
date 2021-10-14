@@ -67,14 +67,16 @@ void Profiles::on_search_changed(){
 }
 void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column) //method to handle signal_row_clicked
 {
-  const auto iter = list_store->get_iter(path);
+  const auto iter = list_store->get_iter(path); //convert the path to an iter so you can actually use it.
   //std::cout << Gtk::TreeModel::get_iter(path) << std::endl;
-  if(iter)
+  if(iter) //Just makes sure the conversion worked.
   {
-	  const auto row = *iter;
-	  auto column = (std::basic_string<char>) row[col_record.profile_col];
-	  auto record = (std::basic_string<char>) row[col_record.status_col];
-	  std::cout << "Row activated: ID=" << column.c_str() << ", Name=" << record.c_str() << std::endl;
+	  const auto row = *iter; //derefrence the iter to actually access the row
+	  
+	  //Note, I had to cast these to basic_string<char> because they were under some weird type called TreeValueProxy
+	  auto path = (std::basic_string<char>) row[col_record.profile_col]; //The path field from the row
+	  auto status = (std::basic_string<char>) row[col_record.status_col]; //The status field from the row
+	  std::cout << "Row activated: ID=" << path.c_str() << ", Name=" << status.c_str() << std::endl; //c_str converts basic_string to an actual string
   }
-  Profilewindow();
+  Profilewindow(); //This isn't doing anything yet
 }
