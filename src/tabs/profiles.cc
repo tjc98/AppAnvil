@@ -1,6 +1,8 @@
 #include "jsoncpp/json/json.h"
 #include "profiles.h"
 
+#include <giomm.h>
+#include <glibmm.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -43,6 +45,36 @@ void Profiles::order_columns(){
   status_view_col->set_sort_column(col_record.status_col);
 }
 
+bool Profiles::change_status(const std::string& profile, const std::string& status){
+  std::string opposite_status; //Stores command based on the current status
+  if(status == "enforce"){
+    opposite_status = "aa-complain";
+  }
+  if(status == "complain"){
+    opposite_status = "aa-enforce";
+  }
+
+//Command to execute to change the correct profile to the opposite status
+  std::vector<std::string> args = {"sudo", opposite_status, profile};
+
+  std::string child_output;
+  std::string child_error;
+  int exit_status = 0;
+
+
+  //Executed in commandline, copied from status.cc 
+  Glib::spawn_sync("/usr/sbin/", args, Glib::SpawnFlags::SPAWN_DEFAULT, {}, &child_output, &child_error, &exit_status);
+
+
+  if(exit_status != 0){
+    std::cout << "Error calling '"<< args[0] <<"'. " << child_error << std::endl;
+    child_output = "{\"processes\": {}, \"profiles\": {}";
+  }
+
+  return true;
+
+}
+
 Profiles::Profiles()
 :  list_store{Gtk::ListStore::create(col_record)}
 {
@@ -77,6 +109,16 @@ void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColum
 	  auto path = (std::basic_string<char>) row[col_record.profile_col]; //The path field from the row
 	  auto status = (std::basic_string<char>) row[col_record.status_col]; //The status field from the row
 	  std::cout << "Row activated: ID=" << path.c_str() << ", Name=" << status.c_str() << std::endl; //c_str converts basic_string to an actual string
+
+    //Executes change_status to switch the status, prints an error if it doesn't work.
+    if(!change_status(path, status))
+    {
+      std::cout << "Error changing the status" << std::endl;
+    }
   }
-  Profilewindow(); //This isn't doing anything yet
+  //Profilewindow(); //This isn't doing anything yet
+
+  //Refresh after changing the status so that it shows up
+  refresh();
+  order_columns();
 }

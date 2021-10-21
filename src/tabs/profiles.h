@@ -30,6 +30,7 @@ class Profiles : public Status
     // Signal handlers    
     void on_search_changed();
     void on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
+    bool change_status(const std::string& profile, const std::string& status);
 
     class StatusColumnRecord : public Gtk::TreeModel::ColumnRecord
     {
