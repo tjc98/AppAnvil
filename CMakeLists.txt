@@ -14,6 +14,7 @@ set(
   ${PROJECT_SOURCE_DIR}/tabs/logs.cc
   ${PROJECT_SOURCE_DIR}/tabs/helloworld.cc
   ${PROJECT_SOURCE_DIR}/tabs/profilewindow.cc
+  ${PROJECT_SOURCE_DIR}/tabs/warning.cc
 )
 
 set(PROJECT_RESOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/resources)
