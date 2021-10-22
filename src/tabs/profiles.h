@@ -13,11 +13,15 @@
 #include <gtkmm/treeviewcolumn.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/searchentry.h>
+#include <gtkmm/dialog.h>
 #include <memory>
 #include <string>
 #include <vector>
 
 #define UNKNOWN_STATUS "unknown"
+
+constexpr int DEFAULT_POPUP_WIDTH = 800;
+constexpr int DEFAULT_POPUP_HEIGHT = 500;
 
 class Profiles : public Status
 {
@@ -47,8 +51,8 @@ class Profiles : public Status
 
     StatusColumnRecord col_record;
     Glib::RefPtr<Gtk::ListStore> list_store;
-  private:
-    Profilewindow pwindow;
+    std::unique_ptr<Gtk::Dialog> p_dialog;
+    std::unique_ptr<Profilewindow> p_settings; 
 };
 
 #endif // GTKMM_EXAMPLE_PROFILES_H

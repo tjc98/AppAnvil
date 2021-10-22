@@ -1,6 +1,7 @@
 #include "jsoncpp/json/json.h"
 #include "profiles.h"
-
+#include <gtkmm/dialog.h>
+#include <gtkmm/messagedialog.h>
 #include <giomm.h>
 #include <glibmm.h>
 #include <iostream>
@@ -109,15 +110,15 @@ void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColum
 	  auto path = (std::basic_string<char>) row[col_record.profile_col]; //The path field from the row
 	  auto status = (std::basic_string<char>) row[col_record.status_col]; //The status field from the row
 	  std::cout << "Row activated: ID=" << path.c_str() << ", Name=" << status.c_str() << std::endl; //c_str converts basic_string to an actual string
-
-    //Executes change_status to switch the status, prints an error if it doesn't work.
-    if(!change_status(path, status))
-    {
-      std::cout << "Error changing the status" << std::endl;
-    }
+	  p_settings.reset(new Profilewindow(path, status));
+  	  p_dialog.reset(new Gtk::Dialog("Profile Settings"));
+  	  p_dialog->set_modal(false);
+  	  p_dialog->get_content_area()->pack_start(*p_settings, true, true);
+  	  p_dialog->set_size_request(DEFAULT_POPUP_WIDTH/2, DEFAULT_POPUP_HEIGHT/2);
+  	  p_dialog->set_default_size(DEFAULT_POPUP_WIDTH, DEFAULT_POPUP_HEIGHT);
+  	  p_dialog->show();
   }
   //Profilewindow(); //This isn't doing anything yet
-
   //Refresh after changing the status so that it shows up
   refresh();
   order_columns();
