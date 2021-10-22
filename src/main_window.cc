@@ -4,42 +4,52 @@
 #include <gtkmm/label.h>
 #include <iostream>
 
-template <typename T_Widget>
-std::unique_ptr<T_Widget> MainWindow::get_widget(const Glib::ustring name, const Glib::RefPtr<Gtk::Builder> &builder){
-  T_Widget *raw_addr = nullptr;
-  builder->get_widget<T_Widget>(name, raw_addr);
-  return std::unique_ptr<T_Widget>(raw_addr);
-}
-
 MainWindow::MainWindow()
-: builder{Gtk::Builder::create_from_resource("/resources/main_window.glade")},
-  m_container{MainWindow::get_widget<Gtk::Box>("m_box", builder)},
-  m_stack{MainWindow::get_widget<Gtk::Stack>("m_stack", builder)},
-  prof{new Profiles()},
+: prof{new Profiles()},
   proc{new Processes()},
-  logs{new Logs()},
-  helloworld{new Helloworld()}
+  logs{new Logs()}
 {
-  // Get the main container and add it to the current window
-  this->add(*m_container);
-
   // Add tabs to the stack pane
-  m_stack->add(*prof, "prof", "Profiles");
-  m_stack->add(*proc, "proc", "Processes");
-  m_stack->add(*logs, "logs", "Logs");
-  m_stack->add(*helloworld, "helloworld", "Hello World");
+  m_stack.add(*prof, "prof", "Profiles");
+  m_stack.add(*proc, "proc", "Processes");
+  m_stack.add(*logs, "logs", "Logs");
+
+  // Attach the stack to the stack switcher
+  m_switcher.set_stack(m_stack);
+
+  // Connect the stackswitcher to the 'on_switch' method
+  auto focus = sigc::mem_fun(*this, &MainWindow::on_switch);
+  m_switcher.signal_event().connect(focus, true);
+  on_switch(NULL);
+
+  // Set some default properties for titlebar
+  m_headerbar.set_custom_title(m_switcher);
+  m_headerbar.set_title("AppAnvil");
+  m_headerbar.set_subtitle("AppArmor GUI");
+  m_headerbar.set_hexpand(true);
+  m_headerbar.set_show_close_button(true);
 
   // Set some default settings for the window
-  this->set_title("AppAnvil (pre-alpha release)");
   this->set_icon_from_file("./resources/icon.svg");
   this->set_default_size(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
   this->add_events(Gdk::EventMask::ENTER_NOTIFY_MASK);
 
-  // Show all children
+  // Add and show all children
+  this->set_titlebar(m_headerbar);
+  this->add(m_stack);
   this->show_all();
 }
 
-MainWindow::~MainWindow()
-{
-  std::cout << "Closing Main Window!" << std::endl;
+bool MainWindow::on_switch(GdkEvent* direction){
+  std::string visible_child  = m_stack.get_visible_child_name();
+
+  if(visible_child == "prof"){
+    prof->refresh();
+  } else if(visible_child == "proc"){
+    proc->refresh();    
+  } else if(visible_child == "logs"){
+    logs->refresh();
+  }
+
+  return false;
 }
