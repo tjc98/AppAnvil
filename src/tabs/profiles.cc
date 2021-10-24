@@ -1,6 +1,8 @@
 #include "jsoncpp/json/json.h"
 #include "profiles.h"
 
+#include <giomm.h>
+#include <glibmm.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -32,6 +34,36 @@ void Profiles::change_status(){
   std::cout << "button works\n" << std::endl;
 }
 
+bool Profiles::change_status(const std::string& profile, const std::string& status){
+  std::string opposite_status; //Stores command based on the current status
+  if(status == "enforce"){
+    opposite_status = "aa-complain";
+  }
+  if(status == "complain"){
+    opposite_status = "aa-enforce";
+  }
+
+//Command to execute to change the correct profile to the opposite status
+  std::vector<std::string> args = {"sudo", opposite_status, profile};
+
+  std::string child_output;
+  std::string child_error;
+  int exit_status = 0;
+
+
+  //Executed in commandline, copied from status.cc 
+  Glib::spawn_sync("/usr/sbin/", args, Glib::SpawnFlags::SPAWN_DEFAULT, {}, &child_output, &child_error, &exit_status);
+
+
+  if(exit_status != 0){
+    std::cout << "Error calling '"<< args[0] <<"'. " << child_error << std::endl;
+    child_output = "{\"processes\": {}, \"profiles\": {}";
+  }
+
+  return true;
+
+}
+
 Profiles::Profiles()
 : col_record{StatusColumnRecord::create(Status::get_view(), col_names)}
 {
@@ -39,14 +71,40 @@ Profiles::Profiles()
   auto func_2 = sigc::mem_fun(*this, &Profiles::on_apply_button_pressed);
   Status::set_refresh_signal_handler(func);
   Status::set_apply_signal_handler(func_2);
-
   this->show_all();
 }
 
 void Profiles::on_search_changed(){
   refresh();
 }
-
 void Profiles::on_apply_button_pressed(){
   change_status();
 }
+
+/* //Currently not working!
+void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column) //method to handle signal_row_clicked
+{
+  const auto iter = list_store->get_iter(path); //convert the path to an iter so you can actually use it.
+  //std::cout << Gtk::TreeModel::get_iter(path) << std::endl;
+  if(iter) //Just makes sure the conversion worked.
+  {
+	  const auto row = *iter; //derefrence the iter to actually access the row
+	  
+	  //Note, I had to cast these to basic_string<char> because they were under some weird type called TreeValueProxy
+	  auto path = (std::basic_string<char>) row[col_record.profile_col]; //The path field from the row
+	  auto status = (std::basic_string<char>) row[col_record.status_col]; //The status field from the row
+	  std::cout << "Row activated: ID=" << path.c_str() << ", Name=" << status.c_str() << std::endl; //c_str converts basic_string to an actual string
+
+    //Executes change_status to switch the status, prints an error if it doesn't work.
+    if(!change_status(path, status))
+    {
+      std::cout << "Error changing the status" << std::endl;
+    }
+  }
+  //Profilewindow(); //This isn't doing anything yet
+
+  //Refresh after changing the status so that it shows up
+  refresh();
+  order_columns();
+}
+*/

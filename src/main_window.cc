@@ -7,7 +7,8 @@
 MainWindow::MainWindow()
 : prof{new Profiles()},
   proc{new Processes()},
-  logs{new Logs()}
+  logs{new Logs()},
+  helloworld{new Helloworld()}
 {
   // Add tabs to the stack pane
   m_stack.add(*prof, "prof", "Profiles");

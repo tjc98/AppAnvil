@@ -2,6 +2,7 @@
 #define TABS_PROFILES_H
 
 #include "status.h"
+#include "profilewindow.h"
 
 #include <gtkmm/box.h>
 #include <gtkmm/builder.h>
@@ -31,6 +32,7 @@ class Profiles : public Status
   private:
     const std::vector<std::string> col_names{"Profile", "Status"};
     std::shared_ptr<StatusColumnRecord> col_record;
+    void on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
 };
 
 #endif // TABS_PROFILES_H
