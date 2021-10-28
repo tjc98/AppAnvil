@@ -79,6 +79,7 @@ std::string Status::get_status_str(){
   std::string child_error;
   int exit_status = 0;
 
+  std::cout << args[0] + " " + args[1] + " " + args[2] << std::endl;
   Glib::spawn_sync("/usr/sbin/", args, Glib::SpawnFlags::SPAWN_DEFAULT, {}, &child_output, &child_error, &exit_status);
 
   if(exit_status != 0){

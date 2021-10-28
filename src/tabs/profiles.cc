@@ -55,15 +55,17 @@ bool Profiles::change_status(const std::string& profile, const std::string& stat
   }
 
 //Command to execute to change the correct profile to the opposite status
-  std::vector<std::string> args = {"sudo", opposite_status, profile};
+  std::vector<std::string> args = {"pkexec", opposite_status, profile};
 
+  std::cout << args[0] + " " + args[1] + " " + args[2] << std::endl;
   std::string child_output;
   std::string child_error;
   int exit_status = 0;
 
 
   //Executed in commandline, copied from status.cc 
-  Glib::spawn_sync("/usr/sbin/", args, Glib::SpawnFlags::SPAWN_DEFAULT, {}, &child_output, &child_error, &exit_status);
+  //Glib::spawn_sync("/usr/sbin/", args, Glib::SpawnFlags::SPAWN_DEFAULT, {}, &child_output, &child_error, &exit_status);
+  Glib::spawn_sync("/usr/sbin/", args, Glib::SpawnFlags::SPAWN_SEARCH_PATH, {}, &child_output, &child_error, &exit_status);
 
 
   if(exit_status != 0){
