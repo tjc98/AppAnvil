@@ -7,8 +7,7 @@
 MainWindow::MainWindow()
 : prof{new Profiles()},
   proc{new Processes()},
-  logs{new Logs()},
-  helloworld{new Helloworld()}
+  logs{new Logs()}
 {
   // Add tabs to the stack pane
 
@@ -30,7 +29,7 @@ MainWindow::MainWindow()
   m_headerbar.set_subtitle("AppArmor GUI");
   m_headerbar.set_hexpand(true);
   m_headerbar.set_show_close_button(true);
->>>>>>> 84e53768b89620413d50e810e739a1ef98795a5e
+
 
   // Set some default settings for the window
   this->set_icon_from_file("./resources/icon.svg");

@@ -68,10 +68,12 @@ Profiles::Profiles()
 : col_record{StatusColumnRecord::create(Status::get_view(), col_names)}
 {
 
+
   auto func = sigc::mem_fun(*this, &Profiles::on_search_changed);
   auto func_2 = sigc::mem_fun(*this, &Profiles::on_apply_button_pressed);
   Status::set_refresh_signal_handler(func);
   Status::set_apply_signal_handler(func_2);
+
 
 
   this->show_all();
@@ -85,4 +87,4 @@ void Profiles::on_search_changed(){
 void Profiles::on_apply_button_pressed(){
   change_status();
 }
->>>>>>> 84e53768b89620413d50e810e739a1ef98795a5e
+

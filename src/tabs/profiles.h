@@ -31,23 +31,10 @@ class Profiles : public Status
     void on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
     bool change_status(const std::string& profile, const std::string& status);
 
-    class StatusColumnRecord : public Gtk::TreeModel::ColumnRecord
-    {
-      public:
-        StatusColumnRecord()
-        {
-          add(profile_col);
-          add(status_col);
-        }
 
-      Gtk::TreeModelColumn<std::string> profile_col;
-      Gtk::TreeModelColumn<std::string> status_col;
-    };
-
-    StatusColumnRecord col_record;
-    Glib::RefPtr<Gtk::ListStore> list_store;
   private:
-    Profilewindow pwindow;
+    const std::vector<std::string> col_names{"Profile", "Status"};
+    std::shared_ptr<StatusColumnRecord> col_record;
 
 };
 
