@@ -15,34 +15,23 @@ void Profiles::refresh(){
 
   int num_found = 0;
 
-  list_store->clear();
+  col_record->clear();
   for(auto prof = profiles.begin(); prof != profiles.end(); prof++){
     std::string key = prof.key().asString();
     if(filter(key)){
-      auto row = *(list_store->append());
-      row[col_record.profile_col] = key;
-      row[col_record.status_col] =  profiles.get(key, UNKNOWN_STATUS).asString();
+      auto row = col_record->new_row();
+      col_record->set_row_data(row, 0, key);
+      col_record->set_row_data(row, 1, profiles.get(key, UNKNOWN_STATUS).asString());
       num_found++;
     }
   }
 
-  s_found_label->set_text(" " + std::to_string(num_found) + " matching profiles");
+  Status::set_status_label_text(" " + std::to_string(num_found) + " matching profiles");
 }
 
-void Profiles::order_columns(){
-  // Notice the column retrieved is a TreeViewColumn, not a TreeModelColumn like was used with s_record
-  // The column numbers depend on the order the are added to s_view
-  auto *profile_view_col = s_view->get_column(0);
-  profile_view_col->set_reorderable();
-  profile_view_col->set_resizable();
-  profile_view_col->set_min_width(MIN_COL_WIDTH);
-  profile_view_col->set_sort_column(col_record.profile_col);
-
-  auto *status_view_col = s_view->get_column(1);
-  status_view_col->set_reorderable();
-  status_view_col->set_resizable();
-  status_view_col->set_min_width(MIN_COL_WIDTH);
-  status_view_col->set_sort_column(col_record.status_col);
+void Profiles::change_status(){
+  //s_row = s_view.get_selection();
+  std::cout << "button works\n" << std::endl;
 }
 
 bool Profiles::change_status(const std::string& profile, const std::string& status){
@@ -76,49 +65,24 @@ bool Profiles::change_status(const std::string& profile, const std::string& stat
 }
 
 Profiles::Profiles()
-:  list_store{Gtk::ListStore::create(col_record)}
+: col_record{StatusColumnRecord::create(Status::get_view(), col_names)}
 {
-  s_view->set_model(list_store);
-  s_view->append_column("Profile", col_record.profile_col);
-  s_view->append_column("Status", col_record.status_col);
 
-  refresh();
-  order_columns();
+  auto func = sigc::mem_fun(*this, &Profiles::on_search_changed);
+  auto func_2 = sigc::mem_fun(*this, &Profiles::on_apply_button_pressed);
+  Status::set_refresh_signal_handler(func);
+  Status::set_apply_signal_handler(func_2);
 
-  auto sig_handler = sigc::mem_fun(*this, &Profiles::on_search_changed);
-  s_search->signal_search_changed().connect(sig_handler, true);
-  s_use_regex->signal_clicked().connect(sig_handler, true);
-  s_match_case->signal_clicked().connect(sig_handler, true);
-  s_whole_word->signal_clicked().connect(sig_handler, true);
-  s_view->signal_row_activated().connect(sigc::mem_fun(*this, &Profiles::on_row_click)); //signal when row in TreeView is clicked
+
   this->show_all();
 }
 
 void Profiles::on_search_changed(){
   refresh();
 }
-void Profiles::on_row_click(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column) //method to handle signal_row_clicked
-{
-  const auto iter = list_store->get_iter(path); //convert the path to an iter so you can actually use it.
-  //std::cout << Gtk::TreeModel::get_iter(path) << std::endl;
-  if(iter) //Just makes sure the conversion worked.
-  {
-	  const auto row = *iter; //derefrence the iter to actually access the row
-	  
-	  //Note, I had to cast these to basic_string<char> because they were under some weird type called TreeValueProxy
-	  auto path = (std::basic_string<char>) row[col_record.profile_col]; //The path field from the row
-	  auto status = (std::basic_string<char>) row[col_record.status_col]; //The status field from the row
-	  std::cout << "Row activated: ID=" << path.c_str() << ", Name=" << status.c_str() << std::endl; //c_str converts basic_string to an actual string
 
-    //Executes change_status to switch the status, prints an error if it doesn't work.
-    if(!change_status(path, status))
-    {
-      std::cout << "Error changing the status" << std::endl;
-    }
-  }
-  //Profilewindow(); //This isn't doing anything yet
 
-  //Refresh after changing the status so that it shows up
-  refresh();
-  order_columns();
+void Profiles::on_apply_button_pressed(){
+  change_status();
 }
+>>>>>>> 84e53768b89620413d50e810e739a1ef98795a5e
