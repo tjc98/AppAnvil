@@ -7,6 +7,7 @@
 #include <regex>
 #include <sstream>
 #include <string>
+#include <string>
 #include <vector>
 
 
@@ -131,12 +132,18 @@ void Status::set_status_label_text(const std::string& str){
   s_found_label->set_text(str);
 }
 
+void Status::set_apply_label_text(const std::string& str){
+  s_apply_info_text->set_text(str);
+}
+
 void Status::set_refresh_signal_handler(const Glib::SignalProxyProperty::SlotType& func){
   s_search->signal_search_changed().connect(func, true);
   s_use_regex->signal_clicked().connect(func, true);
   s_match_case->signal_clicked().connect(func, true);
   s_whole_word->signal_clicked().connect(func, true);
 }
+
+
 
 // for handling the apply button being clicked when an appopriate choice has been made in the drop-down
 void Status::set_apply_signal_handler(const Glib::SignalProxyProperty::SlotType& func){
@@ -147,6 +154,16 @@ std::shared_ptr<Gtk::TreeView> Status::get_view(){
   return s_view;
 }
 
+std::shared_ptr<Gtk::Spinner> Status::get_spinner(){
+  return s_spinner;
+}
+
+/* This is broken, should pull TreeSelection from s_view instead
+std::shared_ptr<Gtk::TreeSelection> Status::get_row(){
+  return s_row;
+}
+*/
+
 void Status::remove_status_selection(){
   s_box->remove(*s_selection_box);
   s_selection_box->hide();
@@ -155,6 +172,7 @@ void Status::remove_status_selection(){
 Status::Status()
 : builder{Gtk::Builder::create_from_resource("/resources/status.glade")},
   s_view{Status::get_widget<Gtk::TreeView>("s_view", builder)},
+  //s_row{Status::get_widget<Gtk::TreeSelection>("s_row", builder)}, --- GTK does NOT like it when you do this
   s_win{Status::get_widget<Gtk::ScrolledWindow>("s_win", builder)},
   s_box{Status::get_widget<Gtk::Box>("s_box", builder)},
   s_search{Status::get_widget<Gtk::SearchEntry>("s_search", builder)},

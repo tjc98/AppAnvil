@@ -5,7 +5,8 @@
 #include "tabs/processes.h"
 #include "tabs/profiles.h"
 #include "tabs/status.h"
-#include "tabs/helloworld.h"
+#include "tabs/permissions.h"
+#include "tabs/parser.h"
 
 #include <gtkmm/applicationwindow.h>
 #include <gtkmm/box.h>
@@ -50,7 +51,7 @@ class MainWindow : public Gtk::ApplicationWindow
     std::unique_ptr<Profiles> prof;
     std::unique_ptr<Processes> proc;
     std::unique_ptr<Logs> logs;
-
+    std::unique_ptr<Permissions> perm;
 };
 
 #endif // MAIN_WINDOW_H

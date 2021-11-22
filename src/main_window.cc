@@ -7,14 +7,14 @@
 MainWindow::MainWindow()
 : prof{new Profiles()},
   proc{new Processes()},
-  logs{new Logs()}
+  logs{new Logs()},
+  perm{new Permissions()}
 {
   // Add tabs to the stack pane
-
   m_stack.add(*prof, "prof", "Profiles");
   m_stack.add(*proc, "proc", "Processes");
   m_stack.add(*logs, "logs", "Logs");
-
+  m_stack.add(*perm, "perms");
   // Attach the stack to the stack switcher
   m_switcher.set_stack(m_stack);
 
@@ -29,7 +29,6 @@ MainWindow::MainWindow()
   m_headerbar.set_subtitle("AppArmor GUI");
   m_headerbar.set_hexpand(true);
   m_headerbar.set_show_close_button(true);
-
 
   // Set some default settings for the window
   this->set_icon_from_file("./resources/icon.svg");
