@@ -7,13 +7,17 @@
 MainWindow::MainWindow()
 : prof{new Profiles()},
   proc{new Processes()},
-  logs{new Logs()}
+  logs{new Logs()},
+  file_chooser{new FileChooser()},
+  perms{new Permissions()},
+  console{new ConsoleThread(prof, proc, logs, file_chooser, perms)}
 {
   // Add tabs to the stack pane
-
   m_stack.add(*prof, "prof", "Profiles");
   m_stack.add(*proc, "proc", "Processes");
   m_stack.add(*logs, "logs", "Logs");
+  m_stack.add(*file_chooser, "file_chooser", "Load Profile");
+  m_stack.add(*perms, "perms", "Permissions");
 
   // Attach the stack to the stack switcher
   m_switcher.set_stack(m_stack);
@@ -29,7 +33,6 @@ MainWindow::MainWindow()
   m_headerbar.set_subtitle("AppArmor GUI");
   m_headerbar.set_hexpand(true);
   m_headerbar.set_show_close_button(true);
-
 
   // Set some default settings for the window
   this->set_icon_from_file("./resources/icon.svg");
@@ -48,11 +51,24 @@ bool MainWindow::on_switch(__attribute__ ((unused)) GdkEvent* direction){
   std::string visible_child  = m_stack.get_visible_child_name();
 
   if(visible_child == "prof"){
-    prof->refresh();
+    console->set_state(PROFILE);
+    console->send_refresh_message();
+    // prof->refresh();
   } else if(visible_child == "proc"){
-    proc->refresh();    
+    console->set_state(PROCESS);
+    console->send_refresh_message();
+    // proc->refresh();    
   } else if(visible_child == "logs"){
-    logs->refresh();
+    console->set_state(LOGS);
+    console->send_refresh_message();
+    // logs->refresh();
+  } else if(visible_child == "file_chooser"){
+    console->set_state(FILECHOOSER);
+    console->send_refresh_message();
+    // logs->refresh();
+  } else if(visible_child == "perms"){
+    console->set_state(PERMISSIONS);
+    console->send_refresh_message();
   }
 
   return false;

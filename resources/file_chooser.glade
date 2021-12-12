@@ -2,33 +2,27 @@
 <!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkBox" id="h_box">
+  <object class="GtkBox" id="fc_box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
     <child>
-      <placeholder/>
-    </child>
-    <child>
-      <object class="GtkButton" id="hellobutton">
-        <property name="label" translatable="yes">Hello World</property>
+      <object class="GtkFileChooserWidget" id="fc_chooser">
         <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="action_name">hello</property>
-        <property name="image_position">bottom</property>
+        <property name="can_focus">False</property>
       </object>
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">1</property>
+        <property name="position">0</property>
       </packing>
     </child>
     <child>
-      <object class="GtkLabel" id="hellolabel">
+      <object class="GtkButton" id="fc_button">
+        <property name="label" translatable="yes">Choose File</property>
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Hello world!</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
       </object>
       <packing>
         <property name="expand">False</property>
